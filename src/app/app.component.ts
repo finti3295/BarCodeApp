@@ -27,7 +27,7 @@ export class AppComponent {
   myVideoBlob : Blob | null = null;
 
   fileToUpload: string = "";
-
+  barcode:string = "";
   width: number = 0;
    height: number = 0;
    frameRate: number | undefined = 0;
@@ -99,6 +99,7 @@ if(theshowCropper){
 
   public set showcamera(theshowcamera: boolean) {
     if(theshowcamera){
+      this.barcode = "";
       this.showCropper = false;
       this.showvideo = false;
       this.showvideoRecorded = false;
@@ -128,6 +129,7 @@ if(theshowCropper){
 
   public set showUpload(theshowUpload: boolean) {
     if(theshowUpload){
+      this.barcode = "";
       this.showcamera = false;
       this.showCropper = false;
       this.showvideo = false;
@@ -218,11 +220,16 @@ if(theshowCropper){
   }
 
   ReadBarcode(){
+    this.barcode = "";
     if(!this.mycanvas)
     return;
  var FILEURI = this.mycanvas.toDataURL('image/png');
-      this.fileUploadService.GetBarCodeFromImage(FILEURI).subscribe(data => {console.log("Barcode = %s", data)},
-    error => {console.log("Barcode error = %s", error);
+      this.fileUploadService.GetBarCodeFromImage(FILEURI).subscribe(data => {
+        this.barcode = data;
+        console.log("Barcode = %s", data)
+    },
+    error => {
+      console.log("Barcode error = %s", error);
     });
   }
 
@@ -246,8 +253,11 @@ if(theshowCropper){
   }
 
   ReadBarcodeFromImageFile(): void {
-    console.log("fileChangeEvent");
-    this.fileUploadService.GetBarCodeFromImageFile(this.fileToUpload, "test").subscribe(data => {console.log("Barcode = %s", data)},
+    this.barcode = "";
+    this.fileUploadService.GetBarCodeFromImageFile(this.fileToUpload, "test").subscribe(data => {
+      this.barcode = data;
+      console.log("Barcode = %s", data)
+    },
     error => {console.log("Barcode error = %s", error);
     });
   }

@@ -28,13 +28,15 @@
   <video controls playsinline id="videoRecorded" [style.display]="showvideoRecorded ? null : 'none' "></video>
   <img id="myFilecanvas" [style.display]="fileToUpload && showUpload? null : 'none'" class="img-fluid" />
 
-    <div class="d-flex gap-2 py-5">
-      <input type="file" [style.display]="showUpload ? null : 'none' "
+    <div class="d-flex gap-2 py-1">
+      <form class="card p-2" [style.display]="showUpload ? null : 'none' ">
+      <input type="file"  
         (change)="fileChangeEvent($event)" />
+        </form> 
       <form class="card p-2" [style.display]="fileToUpload && showUpload  ? null : 'none'">
         <div class="input-group">
-          <input type="text" class="form-control" placeholder="Promo code">
-          <button type="submit" class="btn btn-secondary" (click)="ReadBarcodeFromImageFile()">Read Barcode</button>
+          <input type="text" [ngModel]="barcode" name="ReadBarcode1" class="form-control" placeholder="No barcode">
+          <button type="button" class="btn btn-secondary" (click)="ReadBarcodeFromImageFile()">Read Barcode</button>
         </div>
       </form>
 
@@ -45,8 +47,8 @@
       <div>
         <form class="card p-2" [style.display]="showCropper ? null : 'none'">
           <div class="input-group">
-            <input type="text" class="form-control" placeholder="Promo code">
-            <button type="submit" class="btn btn-secondary" (click)="ReadBarcode()">Read Barcode</button>
+            <input type="text" [ngModel]="barcode" name="ReadBarcode2" class="form-control" placeholder="No code">
+            <button type="button" class="btn btn-secondary" (click)="ReadBarcode()">Read Barcode</button>
           </div>
         </form>
       </div>
