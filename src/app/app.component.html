@@ -20,16 +20,16 @@
     </div>
   </div>
 </nav>
-<div class="container">
+<div class="container justify-content-center">
 
   <video id="video" [style.display]="showcamera ? null : 'none'">Video stream not available.</video>
   <canvas id="mycanvas" [style.display]="showCropper? null : 'none'"></canvas>
   <video autoplay playsinline id="videoLive" [style.display]="showvideo || stopvideo? null : 'none' "></video>
   <video controls playsinline id="videoRecorded" [style.display]="showvideoRecorded ? null : 'none' "></video>
   <img id="myFilecanvas" [style.display]="fileToUpload && showUpload? null : 'none'" class="img-fluid" />
-  <div class="container-fluid">
-    <div class="d-flex gap-2 justify-content-center py-5">
-      <input class="col-sm-6" type="file" [style.display]="showUpload ? null : 'none' "
+
+    <div class="d-flex gap-2 py-5">
+      <input type="file" [style.display]="showUpload ? null : 'none' "
         (change)="fileChangeEvent($event)" />
       <form class="card p-2" [style.display]="fileToUpload && showUpload  ? null : 'none'">
         <div class="input-group">
@@ -42,7 +42,7 @@
         [style.display]="showcamera ? null : 'none' ">Take photo</button>
       <button class="btn btn-secondary rounded-pill px-3" (click)="discardpicture()"
         [style.display]="showCropper? null : 'none'">New photo</button>
-      <div class="col-sm-6">
+      <div>
         <form class="card p-2" [style.display]="showCropper ? null : 'none'">
           <div class="input-group">
             <input type="text" class="form-control" placeholder="Promo code">
@@ -61,4 +61,3 @@
         [style.display]="showvideoRecorded? null : 'none'">new video</button>
     </div>
   </div>
-</div>
