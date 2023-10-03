@@ -26,7 +26,7 @@ export class AppComponent {
   selectedDevice : MediaDeviceInfo| null = null;
   selectedDeviceIndex : number = 0;
 
-  stream: MediaStream| null = null;
+  currentStream: MediaStream| null = null;
   mediaRecorder : MediaRecorder | null = null;
   myVideoBlob : Blob | null = null;
 
@@ -82,7 +82,7 @@ if(theshowCropper){
       this.stopvideo = false;
       console.log("this.videoLive", this.videoLive);
       if (!this.videoLive) return;
-    this.videoLive.srcObject = this.stream;
+    this.videoLive.srcObject = this.currentStream;
     if (!MediaRecorder.isTypeSupported('video/webm')) { // <2>
       console.warn('video/webm is not supported')
     }
@@ -111,7 +111,7 @@ if(theshowCropper){
       this.stopvideo = false;
       if (!this.videoPlayer) return;
       this.mediaRecorder?.stop();
-      this.videoPlayer.srcObject = this.stream;
+      this.videoPlayer.srcObject = this.currentStream;
       this.videoPlayer.play();
       if(!this.videoPlayer.srcObject)
             return;
@@ -171,12 +171,12 @@ if(theshowCropper){
     n.getUserMedia = n.getUserMedia || n.webkitGetUserMedia || n.mozGetUserMedia || n.msGetUserMedia;
     navigator.mediaDevices.enumerateDevices().then(c => this.gotDevices(c));
     n.getUserMedia({ video: true, audio: false }, (mystream: MediaStream) => {
-      this.stream = mystream;
-      if(!this.stream)
+      this.currentStream = mystream;
+      if(!this.currentStream)
       return;
       
       this.showcamera = true;
-       this.mediaRecorder = new MediaRecorder(this.stream, { // <3>
+       this.mediaRecorder = new MediaRecorder(this.currentStream, { // <3>
         mimeType: 'video/webm',
       })
     this.mediaRecorder.addEventListener('dataavailable', event => {
@@ -188,6 +188,46 @@ if(theshowCropper){
     })
     }, () => console.log("Fail"));
 
+  }
+  stopMediaTracks(stream: MediaStream) {
+    stream.getTracks().forEach(track => {
+      track.stop();
+    });
+  }
+
+  switchCam(){
+    if ( this.currentStream !== null) {
+      this.stopMediaTracks(this.currentStream);
+    }
+    const videoConstraints: MediaTrackConstraints = {};
+    this.selectedDeviceIndex = (this.selectedDeviceIndex+1) % this.mediaDevices.length;
+    this.selectedDevice = this.mediaDevices[this.selectedDeviceIndex];
+    if (this.selectedDevice === null) {
+      console.log(this.selectedDevice);
+      videoConstraints.facingMode = 'environment';
+    } else {
+      videoConstraints.deviceId = { exact: this.selectedDevice.deviceId };
+    }
+    const constraints = {
+      video: videoConstraints,
+      audio: false
+    };
+  
+    navigator.mediaDevices
+      .getUserMedia(constraints)
+      .then(stream => {
+        this.currentStream = stream;
+        if(this.showvideo)
+                this.showvideo = true
+                else this.showcamera = true;
+        // if(this.videoPlayer)
+        //         this.videoPlayer.srcObject = stream;
+        // return navigator.mediaDevices.enumerateDevices();
+      })
+      // .then(c => this.gotDevices(c))
+      .catch(error => {
+        console.error(error);
+      });
   }
 
   allowCamera(){
