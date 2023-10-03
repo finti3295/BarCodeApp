@@ -22,6 +22,10 @@ export class AppComponent {
   videoRecorded: HTMLVideoElement | null = null;
   mycanvas: HTMLCanvasElement  | null = null;
   myFilecanvas: HTMLImageElement | null = null;
+  mediaDevices: MediaDeviceInfo[] = [] ;
+  selectedDevice : MediaDeviceInfo| null = null;
+  selectedDeviceIndex : number = 0;
+
   stream: MediaStream| null = null;
   mediaRecorder : MediaRecorder | null = null;
   myVideoBlob : Blob | null = null;
@@ -138,20 +142,39 @@ if(theshowCropper){
     }
     this._showUpload = theshowUpload;
   }
-
+  
+   gotDevices(mediaDevices: MediaDeviceInfo[]) {
+    let count = 1;
+    mediaDevices.forEach(mediaDevice  => {
+      if (mediaDevice.kind === 'videoinput') {
+        // const option = document.createElement('option');
+        // option.value = mediaDevice.deviceId;
+        // const label = mediaDevice.label || `Camera ${count++}`;
+        // const textNode = document.createTextNode(label);
+        // option.appendChild(textNode);
+        if( this.mediaDevices)
+                this.mediaDevices.push(mediaDevice);
+      }
+      if(this.mediaDevices.length > 0)
+            this.selectedDevice = this.mediaDevices[0];
+    });
+  }
   ngOnInit(): void {
     this.videoPlayer = <HTMLVideoElement>document.getElementById("video");
     this.videoRecorded =  <HTMLVideoElement>document.getElementById("videoRecorded");
     this.videoLive =  <HTMLVideoElement>document.getElementById("videoLive");
     this.mycanvas = <HTMLCanvasElement>document.getElementById("mycanvas");
     this.myFilecanvas = <HTMLImageElement>document.getElementById("myFilecanvas");
-    console.log("this.videoLive init", this.videoLive);
+    //this.select = <HTMLSelectElement>document.getElementById('select');
+   // console.log("this.videoLive init", this.videoLive);
     var n = <any>navigator;
     n.getUserMedia = n.getUserMedia || n.webkitGetUserMedia || n.mozGetUserMedia || n.msGetUserMedia;
+    navigator.mediaDevices.enumerateDevices().then(c => this.gotDevices(c));
     n.getUserMedia({ video: true, audio: false }, (mystream: MediaStream) => {
       this.stream = mystream;
       if(!this.stream)
       return;
+      
       this.showcamera = true;
        this.mediaRecorder = new MediaRecorder(this.stream, { // <3>
         mimeType: 'video/webm',
@@ -226,10 +249,10 @@ if(theshowCropper){
  var FILEURI = this.mycanvas.toDataURL('image/png');
       this.fileUploadService.GetBarCodeFromImage(FILEURI).subscribe(data => {
         this.barcode = data;
-        console.log("Barcode = %s", data)
+        //console.log( data)
     },
     error => {
-      console.log("Barcode error = %s", error);
+      this.barcode =error.message ;
     });
   }
 
@@ -256,9 +279,10 @@ if(theshowCropper){
     this.barcode = "";
     this.fileUploadService.GetBarCodeFromImageFile(this.fileToUpload, "test").subscribe(data => {
       this.barcode = data;
-      console.log("Barcode = %s", data)
+      console.log( data)
     },
-    error => {console.log("Barcode error = %s", error);
+    error => { 
+      this.barcode =error.message ;
     });
   }
 }
