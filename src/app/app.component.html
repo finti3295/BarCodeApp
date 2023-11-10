@@ -35,26 +35,16 @@
     <form  [style.display]="showUpload ? null : 'none' ">
       <input type="file" (change)="fileChangeEvent($event)" />
     </form>
-    <div  [style.display]="fileToUpload && showUpload  ? null : 'none'">
-      <div class="input-group py-1" >
-        <input type="text" [ngModel]="barcode" name="ReadBarcode1" class="form-control" placeholder="No barcode">
-        <button type="button" class="btn btn-secondary" (click)="ReadBarcodeFromImageFile()">Read Barcode</button>
-      </div>
-    </div>
-    <button class="btn btn-secondary rounded-pill px-3" (click)="switchCam()" >Switch cam</button>
+   
+    <button class="btn btn-secondary rounded-pill px-3" (click)="switchCam()" [style.display]="mediaDevices.length > 1 &&(showcamera || showvideo) ? null : 'none' ">Switch cam
+
+    </button>
     <!-- <button class="btn btn-secondary rounded-pill px-3" [style.display]="mediaDevices.length > 1 &&(showcamera || showvideo) ? null : 'none' ">Switch cam</button> -->
     <button class="btn btn-secondary  rounded-pill px-3" (click)="takepicture()"
       [style.display]="showcamera ? null : 'none' ">Take photo</button>
     <button class="btn btn-secondary rounded-pill px-3" (click)="discardpicture()"
       [style.display]="showCropper? null : 'none'">New photo</button>
-    <div   [style.display]="showCropper ? null : 'none'">
-
-      <div class="input-group py-1" >
-        <input type="text" [ngModel]="barcode" name="ReadBarcode2" class="form-control" placeholder="No code">
-        <button type="button" class="btn btn-secondary" (click)="ReadBarcode()">Read Barcode</button>
-      </div>
-
-    </div>
+   
 
     <button class=" btn btn-secondary rounded-pill px-3" (click)="startvideo()"
       [style.display]="showvideo ? null : 'none' ">start video</button>
@@ -65,5 +55,19 @@
     <button class=" btn btn-secondary rounded-pill px-3" (click)="discardvideo()"
       [style.display]="showvideoRecorded? null : 'none'">new video</button>
   </div>
-  
+  <div  [style.display]="fileToUpload && showUpload  ? null : 'none'">
+    <div class="input-group py-1" >
+      <input type="text" [ngModel]="barcode" name="ReadBarcode1" class="form-control" placeholder="No barcode">
+      <button type="button" class="btn btn-secondary" (click)="ReadBarcodeFromImageFile()">Read Barcode</button>
+    </div>
+  </div>
+
+  <div   [style.display]="showCropper ? null : 'none'">
+
+    <div class="input-group py-1" >
+      <input type="text" [ngModel]="barcode" name="ReadBarcode2" class="form-control" placeholder="No code">
+      <button type="button" class="btn btn-secondary" (click)="ReadBarcode()">Read Barcode</button>
+    </div>
+
+  </div>
 </div>

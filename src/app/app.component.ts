@@ -287,7 +287,7 @@ if(theshowCropper){
     if(!this.mycanvas)
     return;
  var FILEURI = this.mycanvas.toDataURL('image/png');
-      this.fileUploadService.GetBarCodeFromImage(FILEURI).subscribe(data => {
+      this.fileUploadService.GetBarCodeFromImage64(FILEURI).subscribe(data => {
         this.barcode = data;
         //console.log( data)
     },
@@ -319,10 +319,11 @@ if(theshowCropper){
     this.barcode = "";
     this.fileUploadService.GetBarCodeFromImageFile(this.fileToUpload, "test").subscribe(data => {
       this.barcode = data;
+      console.log( "ReadBarcodeFromImageFile");
       console.log( data)
     },
     error => { 
-      this.barcode =error.message ;
+      this.barcode =JSON.stringify(error) ;
     });
   }
 }

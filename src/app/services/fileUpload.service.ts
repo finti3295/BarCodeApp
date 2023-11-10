@@ -7,12 +7,14 @@ providedIn: 'root'
 export class FileUploadService {
 	
 // API url
-baseApiUrl = "http://localhost:56395/"
+baseApiUrl = "https://192.168.240.190:7261/BarCode/" 
+//baseApiUrl = "http://localhost:5063/BarCode/"
 	
 constructor(private http:HttpClient) { }
 
 // Returns an observable
-GetBarCodeFromImageFile(file : any, filename : string ):Observable<any> {
+GetBarCodeFromImageFile(file : any, filename? : string ):Observable<any> {
+	//return this.http.get(this.baseApiUrl+"api/Test");
 	const formData = new FormData();
 		
 	formData.append("Image", file);
@@ -20,11 +22,11 @@ GetBarCodeFromImageFile(file : any, filename : string ):Observable<any> {
 	return this.http.post(this.baseApiUrl+"api/GetBarCodeFromImageFile", formData )
 }
 
-GetBarCodeFromImage(file : any):Observable<any> {  
+GetBarCodeFromImage64(file : any):Observable<any> {  
 	const formData = new FormData();
 	const data = file.replace(/^data:image\/\w+;base64,/, '');
 	formData.append("base64image", data);
-	return this.http.post(this.baseApiUrl+"api/GetBarCodeFromImage", formData)
+	return this.http.post(this.baseApiUrl+"api/GetBarCodeFromImage64", formData)
 }
 
 uploadVideo(file : any):Observable<any> {  
