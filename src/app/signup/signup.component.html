@@ -1,0 +1,52 @@
+
+<div class="d-flex justify-content-md-center">
+    <div class="col-sm-8 col-sm-offset-2">
+        <h2>Create account</h2>
+        <form (ngSubmit)="onSubmit()">
+            <div class="form-group row mb-3">
+                <div class="col-md-6">
+                    <label for="username">User name</label>
+
+                    <input type="text" id="username" class="form-control" formControlName="username">
+
+                </div>
+              
+            </div>
+            <div class="form-group mb-3">
+                <label for="email">Email</label>
+                <input type="text" id="email" class="form-control" formControlName="email"
+                    placeholder="you@example.com">
+            </div>
+            <div class="form-group row mb-3">
+                <div class="col-md-6">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" class="form-control" formControlName="password">
+
+                </div>
+                <div class="col-md-6">
+                    <label for="password">Re-enter password</label>
+                    <input type="password" id="confirmPassword" class="form-control" formControlName="confirmPassword" >
+                    <div *ngIf="f.confirmPassword.touched && f.confirmPassword.invalid"
+                     class="text-danger d-flex align-items-center bg-transparent " role="alert" style="font-size: 12px;
+                     line-height: 15px">
+                         <i class="bi bi-exclamation-diamond me-1"></i>
+                        <div *ngIf="f.confirmPassword.errors.mustMatch" >Passwords must match.</div>
+                    </div>
+                </div>
+            </div>
+
+
+           
+
+            
+
+            <div class="d-grid gap-2">
+
+                <hr class="mb-4">
+                <button class="btn btn-primary btn-lg btn-block" type="submit" [disabled]="signUpForm.invalid">Continue
+                    to checkout</button>
+            </div>
+        </form>
+        <p class="text-danger">{{errorMessage}}</p>
+    </div>
+</div>
