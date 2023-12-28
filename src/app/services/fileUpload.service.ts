@@ -20,21 +20,21 @@ GetBarCodeFromImageFile(file : any, filename? : string ):Observable<any> {
 	const formData = new FormData();
 		
 	formData.append("Image", file);
-		console.log(environment.baseApiUrl+environment.GetBarCodeFromImageFile);
-	return this.http.post( environment.baseApiUrl + environment.GetBarCodeFromImageFile, formData )
+		console.log(environment.serverUrl+ environment.baseApiUrl+environment.GetBarCodeFromImageFile);
+	return this.http.post(environment.serverUrl+ environment.baseApiUrl + environment.GetBarCodeFromImageFile, formData )
 }
 
 GetBarCodeFromImage64(file : any):Observable<any> {  
 	const formData = new FormData();
 	const data = file.replace(/^data:image\/\w+;base64,/, '');
 	formData.append("base64image", data);
-	return this.http.post(environment.baseApiUrl+environment.GetBarCodeFromImage64, formData)
+	return this.http.post(environment.serverUrl+environment.baseApiUrl+environment.GetBarCodeFromImage64, formData)
 }
 
 uploadVideo(file : any):Observable<any> {  
 	const formData = new FormData();
 	formData.append("Video", file);
-	return this.http.post(environment.baseApiUrl+environment.UploadVideo, formData)
+	return this.http.post(environment.serverUrl+environment.baseApiUrl+environment.UploadVideo, formData)
 }
 
 }

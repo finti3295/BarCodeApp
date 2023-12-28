@@ -3,8 +3,6 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs';
 import { AuthTokenModel } from '../_model/authtokenmodel';
-import { TokenStorageService } from './TokenStorageService.service';
-import { Router } from '@angular/router';
 
 
 const httpOptions = {
@@ -15,17 +13,21 @@ const httpOptions = {
 })
 export class AuthService {
 
-  constructor(private http:HttpClient, private tokenStorage: TokenStorageService , private router: Router) { }
+  constructor(private http:HttpClient) {   
+   }
 
+   getPublic(){
+    return this.http.get(environment.serverUrl+`${environment.AUTH_API}Public`);
+   }
   RefreshLogin(refreshtoken: string): Observable<any> {
-   return this.http.post<AuthTokenModel>(`${environment.AUTH_API}connect/token`, 
+   return this.http.post<AuthTokenModel>(environment.serverUrl+`${environment.AUTH_API}connect/token`, 
   new URLSearchParams( {refresh_token: refreshtoken, grant_type: 'refresh_token', scope: 'openid offline_access' }).toString(),
   httpOptions);
   }
 
   login(Username: string,  Password: string): Observable<any> { 
-    console.log(`${environment.AUTH_API}/connect/token`);
-    return this.http.post<AuthTokenModel>(`${environment.AUTH_API}connect/token`, 
+    console.log(environment.serverUrl+`${environment.AUTH_API}/connect/token`);
+    return this.http.post<AuthTokenModel>(environment.serverUrl+`${environment.AUTH_API}connect/token`, 
     new URLSearchParams( { username: Username, password: Password, grant_type: 'password', scope: 'openid offline_access' }).toString(),
     httpOptions)
 }
@@ -42,37 +44,37 @@ export class AuthService {
     .set('UserName', username)
     .set('Email', email)
     .set('Password', password);
-    return this.http.post(environment.ACC_API + 'Register',  body, httpOptions);
+    return this.http.post(environment.serverUrl+environment.ACC_API + 'Register',  body, httpOptions);
   }
 
   refreshToken(token: string) {
-    return this.http.post(environment.AUTH_API + 'refreshtoken', {
+    return this.http.post(environment.serverUrl+environment.AUTH_API + 'refreshtoken', {
       refreshToken: token
     }, httpOptions);
   }
 
-  logout() {
-     this.http.post<AuthTokenModel>(`${environment.AUTH_API}connect/logout`, {
-      refreshToken: 'test'
-    }, 
-    httpOptions).subscribe({
-      next: (data) => {
-        console.log("logout next");
-        console.log(data);
-        this.tokenStorage.signOut();
+  // logout() {
+  //    this.http.post<AuthTokenModel>(environment.serverUrl+`${environment.AUTH_API}connect/logout`, {
+  //     refreshToken: 'test'
+  //   }, 
+  //   httpOptions).subscribe({
+  //     next: (data) => {
+  //       console.log("logout next");
+  //       console.log(data);
+  //       this.tokenStorage.signOut();
 
-      },
-      error: (err) => {
-        console.log("logout error");
-        console.log(err);
-      },
-      complete: () => {    
-        console.log("logout complete");
-        this.router.navigate(['/login'])
-      }
-    }
-    );
-    ;}
+  //     },
+  //     error: (err) => {
+  //       console.log("logout error");
+  //       console.log(err);
+  //     },
+  //     complete: () => {    
+  //       console.log("logout complete");
+  //       this.router.navigate(['/login'])
+  //     }
+  //   }
+  //   );
+  //   ;}
 }
 
   

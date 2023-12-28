@@ -18,6 +18,7 @@ export class TokenStorageService {
   signOut(): void {
     window.sessionStorage.clear();
     this.isLoggedIn = false;
+    console.log("signOut isLoggedIn "+ this.isLoggedIn)
   }
 
   public saveToken(token: string): void {
