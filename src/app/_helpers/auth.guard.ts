@@ -5,7 +5,7 @@ import { TokenStorageService } from '../services/TokenStorageService.service';
 export const authGuard = () => {
   const authService = inject(TokenStorageService);
   const router = inject(Router);
-console.log("authGuard "+authService.isLoggedIn);
+//console.log("authGuard "+authService.isLoggedIn);
   if (authService.isLoggedIn) {
     return true;
   }

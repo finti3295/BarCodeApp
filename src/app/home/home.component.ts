@@ -1,7 +1,9 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { EventBusService } from '../services/event-bus.service';
 import { FileUploadService } from '../services/fileUpload.service';
+import { TokenStorageService } from '../services/TokenStorageService.service';
 
 
 @Component({
@@ -10,7 +12,7 @@ import { FileUploadService } from '../services/fileUpload.service';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent {
-  constructor(private fileUploadService: FileUploadService, private eventBusService: EventBusService, private authService: AuthService) { }
+  constructor(private fileUploadService: FileUploadService, private tokenStorageService: TokenStorageService, private router: Router) { }
 
   private _showcamera: boolean = true;
   private _showvideo: boolean = false
@@ -83,7 +85,7 @@ if(theshowCropper){
       this.showCropper = false;
       this.showUpload = false;
       this.stopvideo = false;
-      console.log("this.videoLive", this.videoLive);
+      //console.log("this.videoLive", this.videoLive);
       if (!this.videoLive) return;
     this.videoLive.srcObject = this.currentStream;
     if (!MediaRecorder.isTypeSupported('video/webm')) { // <2>
@@ -333,7 +335,8 @@ if(theshowCropper){
   }
 
   logout(){
-    console.log("logout");
-    this.authService.logout()
+    //console.log("logout");
+    this.tokenStorageService.signOut();
+    this.router.navigate(['/login'])
   }
 }

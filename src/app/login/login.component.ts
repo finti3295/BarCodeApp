@@ -24,7 +24,7 @@ public get  isLoggedIn(){
 public set isLoggedIn(value:boolean){
   this._isLoggedIn = value;
   if(value){
-    console.log("isLoggedIn");
+    //console.log("isLoggedIn");
     this.router.navigate(['/home'])
   }
 }
@@ -43,8 +43,8 @@ public set isLoggedIn(value:boolean){
     console.log("login onSubmit");
     this.authService.login(username, password).subscribe({
       next: (data) => {
-        console.log("login next");
-        console.log(data);
+       // console.log("login next");
+        //console.log(data);
         this.tokenStorage.saveUser(data);
 
         this.isLoginFailed = false;
@@ -52,12 +52,13 @@ public set isLoggedIn(value:boolean){
         //this.reloadPage();
       },
       error: (err) => {
-        this.errorMessage = err.error.message;
+        console.log(err);
+        //this.errorMessage = err.error.message;
         this.isLoginFailed = true;
         this.isLoggedIn = false;
       },
       complete: () => {    
-        console.log("login complete");
+        //console.log("login complete");
         //this.isLoggedIn = true;
         //this.router.navigate(['/home'])
       }
