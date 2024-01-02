@@ -1,5 +1,19 @@
-<div  class="d-flex justify-content-center">
-  <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
+<div  class="container">
+  
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="d-none d-sm-block" style="height: 3em;"></div> 
+      <div class="d-block d-sm-none" style="height: 3em;"></div> 
+    </div> 
+  </div>
+  <div class="row">
+    <div class="col-sm-0 col-md-2 col-lg-4"></div>
+    <div class="col-sm-12 col-md-8 col-lg-4">
+      <img class="img-fluid" src="../assets/brand/logo-namirial.svg"  >
+    </div>
+    <div class="col-sm-0 col-md-2 col-lg-4"></div>
+  </div>
+  <!-- <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
     <symbol id="check2" viewBox="0 0 16 16">
       <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
     </symbol>
@@ -47,16 +61,23 @@
         </button>
       </li>
     </ul>
+  </div> -->
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="d-none d-sm-block" style="height: 3em;"></div> 
+      <div class="d-block d-sm-none" style="height: 3em;"></div> 
+    </div> 
   </div>
-
-    
+  <div class="row">
+    <div class="col-sm-0 col-md-2 col-lg-4"></div>
+    <div class="col-sm-12 col-md-12 col-lg-4">
       <form
         name="form"
         (ngSubmit)="f.form.valid && onSubmit()"
         #f="ngForm"
         novalidate
       >
-      <img class="mb-4" src="../assets/brand/Logo-Namiria800.png" alt="" width="140" height="57">
+     
         <div class="form-group">
           <label for="username">Username</label>
           <input
@@ -119,6 +140,9 @@
           Crea account
         </a></span></span>
       </form>
+    </div>
+    <div class="col-sm-0 col-md-2 col-lg-4"></div>
+      </div>  
 <!--   
       <div class="alert alert-success" *ngIf="isLoggedIn">
         Logged in as {{ roles }}.

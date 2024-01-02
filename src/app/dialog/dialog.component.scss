@@ -1,0 +1,39 @@
+:host {
+    border-radius: 3px;
+    border: none;
+    padding: 0;
+    width: 500px;
+  
+    &::backdrop {
+      background: rgba(0, 0, 0, 0.4);
+    }
+  
+    &[open],
+    &::backdrop {
+      animation: fadeIn 0.3s ease-in;
+    }
+  
+    .container {
+      padding: 15px;
+    }
+  
+    &[closing] {
+      animation: fadeOut 0.3s forwards;
+    }
+  }
+  
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+    }
+  }
+  
+  @keyframes fadeOut {
+    0% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+  

@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { User } from '../_model/user';
 
 const TOKEN_KEY = 'auth-token';
@@ -11,14 +12,15 @@ const USER_KEY = 'auth-user';
 export class TokenStorageService {
   isLoggedIn = false;
   roles: string[] = [];
-  constructor() {
+  constructor( private router: Router) {
     this.roles = this.getUser().roles;
    }
 
   signOut(): void {
+    console.log("signOut")
     window.sessionStorage.clear();
     this.isLoggedIn = false;
-    console.log("signOut isLoggedIn "+ this.isLoggedIn)
+    this.router.navigate(['/login'])
   }
 
   public saveToken(token: string): void {
@@ -45,12 +47,16 @@ export class TokenStorageService {
   }
 
   public saveRefreshToken(token: string): void {
-    // window.sessionStorage.removeItem(REFRESHTOKEN_KEY);
-    // window.sessionStorage.setItem(REFRESHTOKEN_KEY, token);
+    console.log("saveRefreshToken"+ token);
+     window.sessionStorage.removeItem(REFRESHTOKEN_KEY);
+     window.sessionStorage.setItem(REFRESHTOKEN_KEY, token);
   }
 
   public getRefreshToken(): string | null {
-    return window.sessionStorage.getItem(REFRESHTOKEN_KEY);
+    var ret  = window.sessionStorage.getItem(REFRESHTOKEN_KEY);
+    console.log("getRefreshToken")
+    console.log(ret);
+    return ret;
   }
 
   public saveUser(user: User): void {
@@ -59,8 +65,8 @@ export class TokenStorageService {
     this.roles = user.role;
     this.saveToken(user.access_token);
     this.saveRefreshToken(user.refresh_token);
-    // window.sessionStorage.removeItem(USER_KEY);
-    // window.sessionStorage.setItem(USER_KEY, JSON.stringify(user));
+     window.sessionStorage.removeItem(USER_KEY);
+    window.sessionStorage.setItem(USER_KEY, JSON.stringify(user));
   }
 
   public getUser(): any {

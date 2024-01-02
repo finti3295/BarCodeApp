@@ -2,6 +2,7 @@ import { InjectionToken, NgModule } from '@angular/core';
 import { ActivatedRouteSnapshot, RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './login/login.component';
+import { NotificationService } from './notification/notification.service';
 import { RegisterComponent } from './register/register.component';
 import { AuthService } from './services/auth.service';
 import { EventBusService } from './services/event-bus.service';
@@ -32,6 +33,6 @@ const routes: Routes = [
       window.open(externalUrl, '_self');
 },
 },
-authInterceptorProviders, FileUploadService, AuthService, TokenStorageService, EventBusService]
+authInterceptorProviders, FileUploadService, AuthService, TokenStorageService, EventBusService, NotificationService]
 })
 export class AppRoutingModule { }

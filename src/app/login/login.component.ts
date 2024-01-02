@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { NotificationService } from '../notification/notification.service';
 import { AuthService } from '../services/auth.service';
 import { TokenStorageService } from '../services/TokenStorageService.service';
 
@@ -29,7 +30,8 @@ public set isLoggedIn(value:boolean){
   }
 }
 
-  constructor(private authService: AuthService, private tokenStorage: TokenStorageService, private router: Router) { }
+  constructor(private authService: AuthService, private tokenStorage: TokenStorageService, private router: Router,
+    protected _notificationSvc: NotificationService) { }
 
   ngOnInit(): void {
     if (this.tokenStorage.getToken()) {

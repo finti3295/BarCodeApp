@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from '../services/auth.service';
-import { EventBusService } from '../services/event-bus.service';
+import { environment } from 'src/environments/environment';
+import { NotificationService } from '../notification/notification.service';
 import { FileUploadService } from '../services/fileUpload.service';
 import { TokenStorageService } from '../services/TokenStorageService.service';
 
@@ -12,7 +12,10 @@ import { TokenStorageService } from '../services/TokenStorageService.service';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent {
-  constructor(private fileUploadService: FileUploadService, private tokenStorageService: TokenStorageService, private router: Router) { }
+  constructor(private fileUploadService: FileUploadService, private tokenStorageService: TokenStorageService, private router: Router,
+    protected _notificationSvc: NotificationService) { }
+
+
 
   private _showcamera: boolean = true;
   private _showvideo: boolean = false
@@ -89,7 +92,7 @@ if(theshowCropper){
       if (!this.videoLive) return;
     this.videoLive.srcObject = this.currentStream;
     if (!MediaRecorder.isTypeSupported('video/webm')) { // <2>
-      console.warn('video/webm is not supported')
+      this._notificationSvc.error('Errore', 'video/webm is not supported', environment.notificationTimeOut); 
     }
   
     }
@@ -152,11 +155,6 @@ if(theshowCropper){
     let count = 1;
     mediaDevices.forEach(mediaDevice  => {
       if (mediaDevice.kind === 'videoinput') {
-        // const option = document.createElement('option');
-        // option.value = mediaDevice.deviceId;
-        // const label = mediaDevice.label || `Camera ${count++}`;
-        // const textNode = document.createTextNode(label);
-        // option.appendChild(textNode);
         if( this.mediaDevices)
                 this.mediaDevices.push(mediaDevice);
       }
@@ -171,8 +169,7 @@ if(theshowCropper){
     this.videoLive =  <HTMLVideoElement>document.getElementById("videoLive");
     this.mycanvas = <HTMLCanvasElement>document.getElementById("mycanvas");
     this.myFilecanvas = <HTMLImageElement>document.getElementById("myFilecanvas");
-    //this.select = <HTMLSelectElement>document.getElementById('select');
-   // console.log("this.videoLive init", this.videoLive);
+
     var n = <any>navigator;
     n.getUserMedia = n.getUserMedia || n.webkitGetUserMedia || n.mozGetUserMedia || n.msGetUserMedia;
     navigator.mediaDevices.enumerateDevices().then(c => this.gotDevices(c));
@@ -232,7 +229,7 @@ if(theshowCropper){
       })
       // .then(c => this.gotDevices(c))
       .catch(error => {
-        console.error(error);
+        this._notificationSvc.error('Errore', error, environment.notificationTimeOut); 
       });
   }
 
@@ -276,16 +273,7 @@ if(theshowCropper){
     this.fileToUpload = event.target.files[0];
     
     if(!this.myFilecanvas)return;
-    this.myFilecanvas.src = window.URL.createObjectURL(event.target.files[0]);// this.fileToUpload;
-    // var context = this.myFilecanvas.getContext('2d');
-    // if (!context)
-    //   return;
-
-    // if (this.width && this.height) {
-    //   this.myFilecanvas.width = this.width;
-    //   this.myFilecanvas.height = this.height;
-    //   context.drawImage(this.videoPlayer, 0, 0, this.width, this.height);     
-    // } 
+    this.myFilecanvas.src = window.URL.createObjectURL(event.target.files[0]);
   }
 
   ReadBarcode(){
@@ -296,8 +284,10 @@ if(theshowCropper){
 
  this.fileUploadService.GetBarCodeFromImage64(FILEURI).subscribe({
   next: (v) => this.barcode = v,
-  error: (e) => { this.barcode =e.message ;console.error(e)},
-  complete: () => console.info('GetBarCodeFromImage64 complete') 
+  error: (e) => {// this.barcode =e.message ;
+    this._notificationSvc.error('Documentale','Errore di comunicazione di rete', environment.notificationTimeOut)
+  },
+  complete: () =>     this._notificationSvc.success('Documentale','Operazione terminata', environment.notificationTimeOut) 
 }      
 )     
   }
@@ -318,8 +308,14 @@ if(theshowCropper){
   uploadVideo(){
     this.fileUploadService.uploadVideo(this.myVideoBlob).subscribe({
       next: (v) => console.log(v),
-      error: (e) => console.error(e),
-      complete: () => console.info('complete') 
+      error: (e) => {
+        console.log(e);
+        this._notificationSvc.error('Documentale','Errore nella comunicazione di rete', environment.notificationTimeOut)
+      },
+      complete: () => {
+        console.info('complete') ;
+        this._notificationSvc.success('Documentale','Video caricato!', environment.notificationTimeOut);
+      }
     }      
     )
   }
@@ -328,8 +324,8 @@ if(theshowCropper){
     this.barcode = "";
     this.fileUploadService.GetBarCodeFromImageFile(this.fileToUpload, "test").subscribe({
       next: (v) => this.barcode = v,
-      error: (e) => console.error(e),
-      complete: () => console.info('complete') 
+      error: (e) =>      this._notificationSvc.error('Documentale','Errore nella comunicazione di rete', environment.notificationTimeOut),
+      complete: () =>  this._notificationSvc.success('Documentale','Operazione terminata!', environment.notificationTimeOut)
     }      
     )
   }
@@ -337,6 +333,6 @@ if(theshowCropper){
   logout(){
     //console.log("logout");
     this.tokenStorageService.signOut();
-    this.router.navigate(['/login'])
+   
   }
 }
