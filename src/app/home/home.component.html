@@ -1,84 +1,108 @@
-
 <nav class="navbar navbar-expand-sm bg-body-tertiary py-0">
-    <div class="container-fluid">
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo01"
-        aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
-        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-          <li class="nav-item active">
-            <a class="nav-link" (click)="allowCamera()">Fotocamera</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" (click)="allowVideo()">Video</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" (click)="AllowUpload()">Immagine </a>
-          </li>
-        </ul>
-        <!-- <select id="select" [(ngModel)]="selectedDevice">
+
+  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo01"
+    aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+    <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+      <li class="nav-item active">
+        <a class="nav-link" (click)="allowCamera()">Fotocamera</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" (click)="allowVideo()">Video</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" (click)="AllowUpload()">Immagine </a>
+      </li>
+    </ul>
+    <!-- <select id="select" [(ngModel)]="selectedDevice">
           <option *ngFor="let c of mediaDevices" [ngValue]="c">{{c.label}}</option>
         </select> -->
-  
-      </div>
-      <div class="nav justify-content-end">
-        <a class="nav-link" (click)="logout()">
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-left" viewBox="0 0 16 16">
-        <path fill-rule="evenodd" d="M6 12.5a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v2a.5.5 0 0 1-1 0v-2A1.5 1.5 0 0 1 6.5 2h8A1.5 1.5 0 0 1 16 3.5v9a1.5 1.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 5 12.5v-2a.5.5 0 0 1 1 0z"/>
-        <path fill-rule="evenodd" d="M.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L1.707 7.5H10.5a.5.5 0 0 1 0 1H1.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3z"/>
+
+  </div>
+  <div class="nav justify-content-end">
+    <a class="nav-link" (click)="logout()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-left"
+        viewBox="0 0 16 16">
+        <path fill-rule="evenodd"
+          d="M6 12.5a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v2a.5.5 0 0 1-1 0v-2A1.5 1.5 0 0 1 6.5 2h8A1.5 1.5 0 0 1 16 3.5v9a1.5 1.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 5 12.5v-2a.5.5 0 0 1 1 0z" />
+        <path fill-rule="evenodd"
+          d="M.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L1.707 7.5H10.5a.5.5 0 0 1 0 1H1.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3z" />
       </svg>
       Logout
-        </a>
-    </div>
-    </div>
-  </nav>
-  <div class="container ">
+    </a>
 
-  <div class="contentarea">
-    <video  class="col-sm" id="video" [style.display]="showcamera ? null : 'none'">Video stream not available.</video>
-    <canvas   class="col-sm" id="mycanvas" [style.display]="showCropper? null : 'none'"></canvas>
-    <video  class="col-sm" autoplay playsinline id="videoLive" [style.display]="showvideo || stopvideo? null : 'none' "></video>
-    <video  class="col-sm" controls playsinline id="videoRecorded" [style.display]="showvideoRecorded ? null : 'none' "></video>
-    <img  class="col-sm" id="myFilecanvas" [style.display]="fileToUpload && showUpload? null : 'none'" class="img-fluid py-1" />
   </div>
+</nav>
+
+
+<div class="container px-4 py-1 ">
+
+
+  <div class="row justify-content-center">
+
+    <video  id="video" [style.display]="showcamera ? null : 'none'"  [width]="width" [height]="height">Video stream
+      not available.</video>
+    <canvas  id="mycanvas" [style.display]="showCropper? null : 'none'"></canvas>
+    <video autoplay playsinline id="videoLive"  [style.max-width.px]="width" [style.max-height.px]="height"
+      [style.display]="showvideo || stopvideo? null : 'none' "></video>
+    <video  controls playsinline id="videoRecorded"
+      [style.display]="showvideoRecorded ? null : 'none' "></video>
+    <img  id="myFilecanvas" [style.display]="fileToUpload && showUpload? null : 'none'"
+      class="img-fluid py-1" />
+</div>  
+
   <div class="d-flex gap-2 justify-content-center">
-      <form  [style.display]="showUpload ? null : 'none' ">
-        <input type="file" (change)="fileChangeEvent($event)" />
-      </form>
-     
-      <button class="btn btn-secondary rounded-pill px-3" (click)="switchCam()" [style.display]="mediaDevices.length > 1 &&(showcamera || showvideo) ? null : 'none' ">Switch cam
-  
-      </button>
-      <!-- <button class="btn btn-secondary rounded-pill px-3" [style.display]="mediaDevices.length > 1 &&(showcamera || showvideo) ? null : 'none' ">Switch cam</button> -->
-      <button class="btn btn-secondary  rounded-pill px-3" (click)="takepicture()"
-        [style.display]="showcamera ? null : 'none' ">Take photo</button>
-      <button class="btn btn-secondary rounded-pill px-3" (click)="discardpicture()"
-        [style.display]="showCropper? null : 'none'">New photo</button>
-     
-  
-      <button class=" btn btn-secondary rounded-pill px-3" (click)="startvideo()"
-        [style.display]="showvideo ? null : 'none' ">start video</button>
-      <button class=" btn btn-secondary rounded-pill px-3" (click)="stopvideoRecording()"
-        [style.display]="stopvideo ? null : 'none' ">stop video</button>
-      <button class=" btn btn-secondary rounded-pill px-3" (click)="uploadVideo()"
-        [style.display]="showvideoRecorded ? null : 'none' ">Upload video</button>
-      <button class=" btn btn-secondary rounded-pill px-3" (click)="discardvideo()"
-        [style.display]="showvideoRecorded? null : 'none'">new video</button>
-    </div>
-    <div  [style.display]="fileToUpload && showUpload  ? null : 'none'">
-      <div class="input-group py-1" >
-        <input type="text" [ngModel]="barcode" name="ReadBarcode1" class="form-control" placeholder="No barcode">
-        <button type="button" class="btn btn-secondary" (click)="ReadBarcodeFromImageFile()">Read Barcode</button>
-      </div>
-    </div>
-  
-    <div   [style.display]="showCropper ? null : 'none'">
-  
-      <div class="input-group py-1" >
-        <input type="text" [ngModel]="barcode" name="ReadBarcode2" class="form-control" placeholder="No code">
-        <button type="button" class="btn btn-secondary" (click)="ReadBarcode()">Read Barcode</button>
-      </div>
-  
+    
+    <form [style.display]="showUpload ? null : 'none' ">
+      <input type="file" (change)="fileChangeEvent($event)" />
+    </form>
+
+    <button class="btn btn-secondary rounded-pill px-3" (click)="switchCam()"
+      [style.display]="mediaDevices.length > 1 &&(showcamera || showvideo) ? null : 'none' ">Switch cam
+
+    </button>
+    <!-- <button class="btn btn-secondary rounded-pill px-3" [style.display]="mediaDevices.length > 1 &&(showcamera || showvideo) ? null : 'none' ">Switch cam</button> -->
+    <button class="btn btn-secondary  rounded-pill px-3" (click)="takepicture()"
+      [style.display]="showcamera ? null : 'none' ">Take photo</button>
+    <button class="btn btn-secondary rounded-pill px-3" (click)="discardpicture()"
+      [style.display]="showCropper? null : 'none'">New photo</button>
+
+
+    <button class=" btn btn-secondary rounded-pill px-3" (click)="startvideo()"
+      [style.display]="showvideo ? null : 'none' ">start video</button>
+    <button class=" btn btn-secondary rounded-pill px-3" (click)="stopvideoRecording()"
+      [style.display]="stopvideo ? null : 'none' ">stop video</button>
+    <button class=" btn btn-secondary rounded-pill px-3" (click)="uploadVideo()"
+      [style.display]="showvideoRecorded ? null : 'none' ">Upload video</button>
+    <button class=" btn btn-secondary rounded-pill px-3" (click)="discardvideo()"
+      [style.display]="showvideoRecorded? null : 'none'">new video</button>
+  </div>
+  <div [style.display]="fileToUpload && showUpload  ? null : 'none'">
+    <div class="input-group py-1">
+      <input type="text" [ngModel]="barcode" name="ReadBarcode1" class="form-control" placeholder="No barcode">
+      <button type="button" class="btn btn-secondary" (click)="ReadBarcodeFromImageFile()">Read Barcode</button>
     </div>
   </div>
+
+  <div [style.display]="showCropper ? null : 'none'">
+
+    <div class="input-group py-1">
+      <input type="text" [ngModel]="barcode" name="ReadBarcode2" class="form-control" placeholder="No code">
+      <button type="button" class="btn btn-secondary" (click)="ReadBarcode()">Read Barcode</button>
+    </div>
+
+  </div>
+
+
+
+
+
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="d-none d-sm-block" style="height: 3em;"></div>
+      <div class="d-block d-sm-none" style="height: 3em;"></div>
+    </div>
+  </div>
+</div>

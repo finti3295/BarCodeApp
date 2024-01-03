@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
 import { NotificationService } from '../notification/notification.service';
@@ -40,10 +40,31 @@ export class HomeComponent {
 
   fileToUpload: string = "";
   barcode:string = "";
-  width: number = 0;
-   height: number = 0;
+  @Input() width: number = 0;
+  @Output() widthChange = new EventEmitter<number>();
+  @Input() height: number = 0;
+  @Output() heightChange = new EventEmitter<number>();
    frameRate: number | undefined = 0;
 
+   setWidth(delta: number) {
+    this.width = delta;
+    if(this.showcamera && this.videoPlayer){
+      this.videoPlayer.width = this.width;
+    }else if(this.showvideo && this.videoLive) {
+      this.videoLive.width = this.width;
+    }
+    this.widthChange.emit(this.width);
+  }
+
+  setHeight(delta: number) {
+    this.height = delta;
+    if(this.showcamera && this.videoPlayer){
+      this.videoPlayer.height = this.height;
+    }else if(this.showvideo && this.videoLive) {
+      this.videoLive.height = this.height;
+    }
+    this.heightChange.emit(this.height);
+  }
    public get showCropper(){
     return this._showCropper;
    }
@@ -110,30 +131,43 @@ if(theshowCropper){
   }
 
   public set showcamera(theshowcamera: boolean) {
+    //console.log("showcamera="+theshowcamera);
     if(theshowcamera){
+      //console.log("showcamera");
       this.barcode = "";
       this.showCropper = false;
       this.showvideo = false;
       this.showvideoRecorded = false;
       this.showUpload = false;
       this.stopvideo = false;
-      if (!this.videoPlayer) return;
+      if (!this.videoPlayer) {
+        //console.log("this.videoPlayer");
+        return;
+      }
       this.mediaRecorder?.stop();
       this.videoPlayer.srcObject = this.currentStream;
       this.videoPlayer.play();
       if(!this.videoPlayer.srcObject)
-            return;
+      {
+        //console.log("this.videoPlayer.srcObject");
+        return;
+      }
       let track = this.videoPlayer.srcObject.getTracks()[0];
       if (track.getSettings) {
         let { width, height, frameRate } = track.getSettings();
+        //console.log("width= "+width);
+        //console.log("height= "+height);
         if (width)
-          this.width = width;
+          this.setWidth(width);
         if (height)
-          this.height = height;
+        this.setHeight(height)
           if(this.frameRate)
                   this.frameRate = frameRate;
 
-        //console.log(`${width}x${height}x${frameRate}`);
+        console.log(`${width}x${height}x${frameRate}`);
+        // this.setWidth(this.width);
+        // this.setHeight(this.height);
+        console.log(this.videoPlayer);
       }
     }
     this._showcamera = theshowcamera;
@@ -175,8 +209,9 @@ if(theshowCropper){
     navigator.mediaDevices.enumerateDevices().then(c => this.gotDevices(c));
     n.getUserMedia({ video: true, audio: false }, (mystream: MediaStream) => {
       this.currentStream = mystream;
-      if(!this.currentStream)
-      return;
+      if(!this.currentStream){
+        //console.log("this.currentStream ")
+      return;}
       
       this.showcamera = true;
        this.mediaRecorder = new MediaRecorder(this.currentStream, { // <3>
@@ -189,8 +224,10 @@ if(theshowCropper){
           this.myVideoBlob = event.data;
          }
     })
+    //this.allowVideo();
+    //this.allowCamera();
     }, () => console.log("Fail"));
-
+//this.allowCamera();
   }
   stopMediaTracks(stream: MediaStream) {
     stream.getTracks().forEach(track => {
@@ -234,6 +271,7 @@ if(theshowCropper){
   }
 
   allowCamera(){
+    //console.log("allowCamera="+  this.showcamera);
     this.showcamera = true;
   }
   allowVideo(){
