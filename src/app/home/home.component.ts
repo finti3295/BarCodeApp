@@ -23,6 +23,7 @@ export class HomeComponent {
   private _showCropper: boolean = false;
   private _showUpload: boolean = false;
   private _stopvideo:boolean = false;
+  private _showBarcode: boolean = false;
 
   streaming: boolean = false;
   videoPlayer: HTMLVideoElement | null = null;
@@ -30,6 +31,7 @@ export class HomeComponent {
   videoRecorded: HTMLVideoElement | null = null;
   mycanvas: HTMLCanvasElement  | null = null;
   myFilecanvas: HTMLImageElement | null = null;
+  myfileInput: HTMLInputElement | null = null;
   mediaDevices: MediaDeviceInfo[] = [] ;
   selectedDevice : MediaDeviceInfo| null = null;
   selectedDeviceIndex : number = 0;
@@ -45,6 +47,7 @@ export class HomeComponent {
   @Input() height: number = 0;
   @Output() heightChange = new EventEmitter<number>();
    frameRate: number | undefined = 0;
+   aspectRatio: number | undefined = 0;
 
    setWidth(delta: number) {
     this.width = delta;
@@ -88,6 +91,10 @@ export class HomeComponent {
     return this._showUpload;
   }
 
+    public get showBarcode() {
+    return this._showBarcode;
+  }
+
   public set showCropper(theshowCropper: boolean){
 if(theshowCropper){
   this.showcamera = false;
@@ -100,6 +107,9 @@ if(theshowCropper){
         this.showvideo = false;
     this._stopvideo = thestopvideo;
 
+  }
+  public set showBarcode(v: boolean){
+    this._showBarcode = v;
   }
 
   public set showvideo(theshowvideo: boolean) {
@@ -154,7 +164,9 @@ if(theshowCropper){
       }
       let track = this.videoPlayer.srcObject.getTracks()[0];
       if (track.getSettings) {
-        let { width, height, frameRate } = track.getSettings();
+        console.log( track.getSettings());
+        let { width, height, frameRate, aspectRatio } = track.getSettings();
+        this.aspectRatio = aspectRatio;
         //console.log("width= "+width);
         //console.log("height= "+height);
         if (width)
@@ -167,8 +179,11 @@ if(theshowCropper){
         console.log(`${width}x${height}x${frameRate}`);
         // this.setWidth(this.width);
         // this.setHeight(this.height);
+      
         console.log(this.videoPlayer);
       }
+    }else{
+      this.showBarcode = false;
     }
     this._showcamera = theshowcamera;
   }
@@ -203,6 +218,7 @@ if(theshowCropper){
     this.videoLive =  <HTMLVideoElement>document.getElementById("videoLive");
     this.mycanvas = <HTMLCanvasElement>document.getElementById("mycanvas");
     this.myFilecanvas = <HTMLImageElement>document.getElementById("myFilecanvas");
+    this.myfileInput = <HTMLInputElement>document.getElementById("myfileInput");
 
     var n = <any>navigator;
     n.getUserMedia = n.getUserMedia || n.webkitGetUserMedia || n.mozGetUserMedia || n.msGetUserMedia;
@@ -279,10 +295,18 @@ if(theshowCropper){
   }
 
   AllowUpload(){
-    this.showUpload = true;
+    this.showUpload = true; 
+    this.uploadFile()  
   }
 
+  discardFile(){
+    this.uploadFile() ;
+    this.showBarcode = false;
+  }
 
+uploadFile(){
+  this.myfileInput?.click();
+}
   takepicture() {
     if ( !this.videoPlayer || !this.mycanvas)
       return;
@@ -294,7 +318,7 @@ if(theshowCropper){
     if (this.width && this.height) {
       this.mycanvas.width = this.width;
       this.mycanvas.height = this.height;
-      context.drawImage(this.videoPlayer, 0, 0, this.width, this.height);     
+      context.drawImage(this.videoPlayer, 0, 0  );     
     } 
     this.showCropper = true;
   }
@@ -305,12 +329,14 @@ if(theshowCropper){
   }
   discardpicture(){
     this.showcamera = true;
+    this.showBarcode = false;
   }
 
   fileChangeEvent(event: any): void {
-    this.fileToUpload = event.target.files[0];
-    
-    if(!this.myFilecanvas)return;
+    console.log(event.target);
+    if(!this.myFilecanvas || !event.target || !event.target.files)return;
+    this.fileToUpload = event.target.files[0];   
+
     this.myFilecanvas.src = window.URL.createObjectURL(event.target.files[0]);
   }
 
@@ -321,7 +347,10 @@ if(theshowCropper){
  var FILEURI = this.mycanvas.toDataURL('image/png');
 
  this.fileUploadService.GetBarCodeFromImage64(FILEURI).subscribe({
-  next: (v) => this.barcode = v,
+  next: (v) =>{ 
+    this.barcode = v;
+    this.showBarcode = true;
+  },
   error: (e) => {// this.barcode =e.message ;
     this._notificationSvc.error('Documentale','Errore di comunicazione di rete', environment.notificationTimeOut)
   },
@@ -361,7 +390,10 @@ if(theshowCropper){
   ReadBarcodeFromImageFile(): void {
     this.barcode = "";
     this.fileUploadService.GetBarCodeFromImageFile(this.fileToUpload, "test").subscribe({
-      next: (v) => this.barcode = v,
+      next: (v) => {
+        this.barcode = v;
+        this.showBarcode = true;
+      },
       error: (e) =>      this._notificationSvc.error('Documentale','Errore nella comunicazione di rete', environment.notificationTimeOut),
       complete: () =>  this._notificationSvc.success('Documentale','Operazione terminata!', environment.notificationTimeOut)
     }      
