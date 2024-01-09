@@ -40,7 +40,7 @@
     [style.display]="showvideo || stopvideo? null : 'none' "></video>
   <video controls playsinline id="videoRecorded" [style.display]="showvideoRecorded ? null : 'none' "></video>
   <img id="myFilecanvas" [style.display]="fileToUpload && showUpload? null : 'none'" class="img-fluid py-1" />
-  <canvas id="mycanvas" class="img-fluid" [style.display]="showCropper? null : 'none'"></canvas>
+  <canvas id="mycanvas" class="img-fluid" [style.display]="showCropper? null : 'none'" [style.max-width.px]="width" [style.max-height.px]="height"></canvas>
 <!-- <div class="cam">
 
     
