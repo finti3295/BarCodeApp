@@ -20,8 +20,10 @@ export class AuthService {
     return this.http.get(environment.serverUrl+`${environment.AUTH_API}Public`);
    }
   RefreshLogin(refreshtoken: string): Observable<any> {
-   return this.http.post<AuthTokenModel>(environment.serverUrl+`${environment.AUTH_API}connect/token`, 
-  new URLSearchParams( {refresh_token: refreshtoken, grant_type: 'refresh_token', scope: 'openid offline_access' }).toString(),
+    var url = environment.serverUrl+`${environment.AUTH_API}connect/token`;
+    var body = new URLSearchParams( {refresh_token: refreshtoken, grant_type: 'refresh_token', scope: 'openid offline_access' }).toString();
+   return this.http.post<AuthTokenModel>(url, 
+  body,
   httpOptions);
   }
 
@@ -48,6 +50,7 @@ export class AuthService {
   }
 
   refreshToken(token: string) {
+    //console.log("refreshToken "+token)
     return this.http.post(environment.serverUrl+environment.AUTH_API + 'refreshtoken', {
       refreshToken: token
     }, httpOptions);

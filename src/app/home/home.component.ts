@@ -16,7 +16,7 @@ export class HomeComponent {
     protected _notificationSvc: NotificationService) { }
 
 
-
+//#region  Properties
   private _showcamera: boolean = true;
   private _showvideo: boolean = false
   private _showvideoRecorded: boolean = false;
@@ -32,6 +32,7 @@ export class HomeComponent {
   mycanvas: HTMLCanvasElement  | null = null;
   myFilecanvas: HTMLImageElement | null = null;
   myfileInput: HTMLInputElement | null = null;
+  myfileName: HTMLInputElement | null = null;
   mediaDevices: MediaDeviceInfo[] = [] ;
   selectedDevice : MediaDeviceInfo| null = null;
   selectedDeviceIndex : number = 0;
@@ -41,6 +42,7 @@ export class HomeComponent {
   myVideoBlob : Blob | null = null;
 
   fileToUpload: string = "";
+  fileName: string = "";
   barcode:string = "";
   @Input() width: number = 0;
   @Output() widthChange = new EventEmitter<number>();
@@ -119,13 +121,13 @@ if(theshowCropper){
       this.showCropper = false;
       this.showUpload = false;
       this.stopvideo = false;
+      this.fileName = ['video_', (new Date() + '').slice(4, 28).replaceAll(' ', '').replaceAll(':',''), '.'+environment.mimeType].join('');
       //console.log("this.videoLive", this.videoLive);
       if (!this.videoLive) return;
     this.videoLive.srcObject = this.currentStream;
     if (!MediaRecorder.isTypeSupported('video/webm')) { // <2>
       this._notificationSvc.error('Errore', 'video/webm is not supported', environment.notificationTimeOut); 
-    }
-  
+    }  
     }
     this._showvideo = theshowvideo;
   }
@@ -177,8 +179,6 @@ if(theshowCropper){
                   this.frameRate = frameRate;
 
         console.log(`${width}x${height}x${frameRate}`);
-        // this.setWidth(this.width);
-        // this.setHeight(this.height);
       
         console.log(this.videoPlayer);
       }
@@ -199,7 +199,7 @@ if(theshowCropper){
     }
     this._showUpload = theshowUpload;
   }
-  
+  //#endregion
    gotDevices(mediaDevices: MediaDeviceInfo[]) {
     let count = 1;
     mediaDevices.forEach(mediaDevice  => {
@@ -219,6 +219,7 @@ if(theshowCropper){
     this.mycanvas = <HTMLCanvasElement>document.getElementById("mycanvas");
     this.myFilecanvas = <HTMLImageElement>document.getElementById("myFilecanvas");
     this.myfileInput = <HTMLInputElement>document.getElementById("myfileInput");
+    this.myfileName = <HTMLInputElement>document.getElementById("myfileName");
 
     var n = <any>navigator;
     n.getUserMedia = n.getUserMedia || n.webkitGetUserMedia || n.mozGetUserMedia || n.msGetUserMedia;
@@ -231,7 +232,7 @@ if(theshowCropper){
       
       this.showcamera = true;
        this.mediaRecorder = new MediaRecorder(this.currentStream, { // <3>
-        mimeType: 'video/webm',
+        mimeType: 'video/' + environment.mimeType,
       })
     this.mediaRecorder.addEventListener('dataavailable', event => {
       if(this.videoRecorded)
@@ -240,11 +241,9 @@ if(theshowCropper){
           this.myVideoBlob = event.data;
          }
     })
-    //this.allowVideo();
-    //this.allowCamera();
     }, () => console.log("Fail"));
-//this.allowCamera();
   }
+
   stopMediaTracks(stream: MediaStream) {
     stream.getTracks().forEach(track => {
       track.stop();
@@ -274,20 +273,16 @@ if(theshowCropper){
       .then(stream => {
         this.currentStream = stream;
         if(this.showvideo)
-                this.showvideo = true
-                else this.showcamera = true;
-        // if(this.videoPlayer)
-        //         this.videoPlayer.srcObject = stream;
-        // return navigator.mediaDevices.enumerateDevices();
+          this.showvideo = true
+        else
+          this.showcamera = true;
       })
-      // .then(c => this.gotDevices(c))
       .catch(error => {
         this._notificationSvc.error('Errore', error, environment.notificationTimeOut); 
       });
   }
 
   allowCamera(){
-    //console.log("allowCamera="+  this.showcamera);
     this.showcamera = true;
   }
   allowVideo(){
@@ -369,11 +364,11 @@ uploadFile(){
   stopvideoRecording(){
     this.showvideoRecorded = true; 
     if(this.mediaRecorder)
-    this.mediaRecorder.stop()    
+    this.mediaRecorder.stop()  
   }
 
   uploadVideo(){
-    this.fileUploadService.uploadVideo(this.myVideoBlob).subscribe({
+    this.fileUploadService.uploadVideo(this.myVideoBlob, this.myfileName?.value).subscribe({
       next: (v) => console.log(v),
       error: (e) => {
         console.log(e);
